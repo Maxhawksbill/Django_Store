@@ -21,6 +21,6 @@ def send_message(chat_id, text):
 
 
 if __name__ == '__main__':
-    chat_id = 192484569
+    chat_id = 912697577
     text = "How Are you?"
     send_message(chat_id, text)

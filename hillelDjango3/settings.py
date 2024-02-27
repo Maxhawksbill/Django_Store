@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+
+from celery.schedules import crontab
 from dotenv import load_dotenv
+from celery import Celery
 
 load_dotenv()
 
@@ -28,7 +31,7 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -47,6 +50,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     'django_filters',
     "django_celery_beat",
+    "django_celery_results",
     # Local apps
     'products',
 ]
@@ -180,11 +184,17 @@ REST_FRAMEWORK = {
 }
 
 # Celery settings
-# CELERY_BROKER_URL = os.environ["CELERY_BROKER_URL"]
-#
-# CELERY_BEAT_SCHEDULE = {
-#     'hello_world': {
-#         'task': 'products.tasks.hello_world_task',
-#         'schedule': 10.0,
-#     }
-# }
+CELERY_BROKER_URL = os.environ["CELERY_BROKER_URL"]
+
+CELERY_BEAT_SCHEDULE = {
+    'hello_world': {
+        'task': 'products.tasks.hello_world_task',
+        'schedule': 10.0,
+    },
+    'daily_statistics': {
+        'task': 'products.tasks.order_daily_statistics',
+        'schedule': crontab(hour=10, minute=00),
+    },
+}
+
+CELERY_RESULT_BACKEND = "django-db"

@@ -9,7 +9,7 @@ class StoreReadOnlySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Store
-        fields = ('id', 'name', 'country', 'city', 'address', 'square', 'employees_num', 'inventory', 'inventory_amount', 'notes')
+        fields = ('id', 'name', 'country', 'city', 'address', 'square', 'employees_num', 'inventory', 'inventory_amount', 'notes', 'opened_date')
 
     def get_inventory(self, obj):
         inventory_data = []
@@ -23,4 +23,4 @@ class StoreReadOnlySerializer(serializers.ModelSerializer):
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
-        fields = ('name', 'country', 'city', 'address', 'square', 'employees_num', 'inventory', 'inventory_amount', 'notes')
+        fields = ('name', 'country', 'city', 'address', 'square', 'employees_num', 'inventory', 'inventory_amount', 'notes', 'opened_date')

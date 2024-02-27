@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 
-from telegram.client import send_message
+from .client import send_message
 
 
 @api_view(['POST'])
@@ -18,7 +18,7 @@ def telegram(request):
 
     telegram_text = f"{name}: {text}"
 
-    send_message(192484569, telegram_text)
+    send_message(912697577, telegram_text)
 
     # Some comment
 

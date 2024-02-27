@@ -37,8 +37,10 @@ def store_view(request, *args, **kwargs):
             'notes': store.notes,
             'opened_date': store.opened_date
         })
+    return JsonResponse({'data': stores_list})
 
 def celery_view(request, *args, **kwargs):
     hello_world_task.delay()
 
     return HttpResponse("OK")
+
