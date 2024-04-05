@@ -22,12 +22,15 @@ class Command(BaseCommand):
 
         # SELECT * FROM products_product WHERE category_id=1 OR price>100
         # Using OR operator
-        products = Product.objects.filter(category_id=1) | Product.objects.filter(price__gt=100)
+        products = Product.objects.filter(
+            category_id=1) | Product.objects.filter(
+            price__gt=100)
 
         print(products)
 
         # Exclude
-        # SELECT * FROM products_product WHERE NOT (category_id=1 AND price>100)
+        # SELECT * FROM products_product WHERE NOT (category_id=1 AND
+        # price>100)
         products = Product.objects.exclude(category_id=1, price__gt=100)
         print(products)
 
@@ -48,7 +51,6 @@ class Command(BaseCommand):
 
         # short_query is a queryset
         short_query_to_list = list(short_query)
-
 
         # GET - return single object
         # SELECT * FROM products_product WHERE id=1
@@ -74,21 +76,28 @@ class Command(BaseCommand):
         products = Product.objects.order_by('-price', 'title')
 
         # Group by category
-        # SELECT category_id, COUNT(*) FROM products_product GROUP BY category_id
-        products = Product.objects.values('category_id').annotate(count=Count('id'))
+        # SELECT category_id, COUNT(*) FROM products_product GROUP BY
+        # category_id
+        products = Product.objects.values(
+            'category_id').annotate(count=Count('id'))
 
         # Group by category, show average price
-        # SELECT category_id, AVG(price) FROM products_product GROUP BY category_id
-        average_price_py_category = Product.objects.values('category_id').annotate(avg_price=Count('price'))
+        # SELECT category_id, AVG(price) FROM products_product GROUP BY
+        # category_id
+        average_price_py_category = Product.objects.values(
+            'category_id').annotate(avg_price=Count('price'))
 
         # For every product set price which is average for the category
         for product in all_products:
-            product.price = average_price_py_category.get(category_id=product.category_id)['avg_price']
+            product.price = average_price_py_category.get(
+                category_id=product.category_id)['avg_price']
             product.save()
 
         # Create new product
-        # INSERT INTO products_product (title, price, category_id) VALUES ('New product', 100, 1)
-        new_product = Product.objects.create(title='New product', price=100, category_id=1)
+        # INSERT INTO products_product (title, price, category_id) VALUES ('New
+        # product', 100, 1)
+        new_product = Product.objects.create(
+            title='New product', price=100, category_id=1)
 
         # Update
         # UPDATE products_product SET price=200 WHERE id=1

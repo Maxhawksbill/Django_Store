@@ -7,17 +7,23 @@ from .product import Product
 
 
 class Order(models.Model):
-    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    uuid = models.UUIDField(
+        primary_key=True,
+        editable=False,
+        default=uuid.uuid4)
     # on_delete=models.CASCADE means that if the user is deleted, all of their orders will be deleted
     # on_delete=models.SET_NULL means that if the user is deleted, the order will still exist, but the user will be set to NULL
     # on_delete=models.PROTECT means that if the user is deleted, the order will still exist, but the user will be set to NULL
-    # on_delete=models.SET_DEFAULT means that if the user is deleted, the order will still exist, but the user will be set to the default user
+    # on_delete=models.SET_DEFAULT means that if the user is deleted, the
+    # order will still exist, but the user will be set to the default user
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     products = models.ManyToManyField(Product, through='OrderProduct')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    display_number = models.IntegerField(blank=False, null=False, default=0)
 
     # because we added related_name='orders' in the OrderProduct model, we can access the order_products from the Order model
     # order_products = models.ManyToManyField('OrderProduct')

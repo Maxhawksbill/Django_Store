@@ -1,0 +1,61 @@
+version: "3"
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "54322:5432"
+  redis:
+    image: "redis:latest"
+  web:
+    build:
+      context: .
+    image: hillel_django-web
+    ports:
+      - "8001:8000"
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    environment:
+        - DB_HOST=db
+        - DB_NAME=postgres
+        - DB_USER=postgres
+        - DB_PASSWORD=postgres
+        - CELERY_BROKER_URL=redis://redis:6379/0
+        - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+        - db
+        - redis
+    volumes:
+      - .:/app
+    restart: always
+  migration:
+    image: hillel_django-web
+    command: ["python", "manage.py", "migrate"]
+    environment:
+        - DB_HOST=db
+        - DB_NAME=postgres
+        - DB_USER=postgres
+        - DB_PASSWORD=postgres
+    depends_on:
+        - db
+    restart: on-failure
+    volumes:
+      - .:/app
+  celery:
+    image: hillel_django-web
+    command: ["celery", "-A", "hillelDjango3.celery", "worker", "--loglevel=info", "--beat"]
+    environment:
+        - DB_HOST=db
+        - DB_NAME=postgres
+        - DB_USER=postgres
+        - DB_PASSWORD=postgres
+        - CELERY_BROKER_URL=redis://redis:6379/0
+        - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+        - db
+        - redis
+    volumes:
+        - .:/app
+    restart: always

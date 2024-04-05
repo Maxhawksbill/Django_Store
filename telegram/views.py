@@ -23,4 +23,3 @@ def telegram(request):
     # Some comment
 
     return Response({'status': 'OK!'})
-

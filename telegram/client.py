@@ -7,6 +7,7 @@ load_dotenv()
 
 token = os.environ.get('TELEGRAM_BOT_TOKEN')
 
+
 def send_message(chat_id, text):
     telegram_url = f'https://api.telegram.org/bot{token}/sendMessage'
     print(telegram_url)

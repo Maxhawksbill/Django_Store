@@ -13,7 +13,12 @@ class Product(models.Model):
     featured = models.BooleanField(default=False)  # null=True, default=True
     is_18_plus = models.BooleanField(default=False)
 
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True, related_name='products')
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='products')
     tags = models.ManyToManyField(Tag, blank=True, related_name='products')
 
     orders = models.ManyToManyField('Order', through='OrderProduct')

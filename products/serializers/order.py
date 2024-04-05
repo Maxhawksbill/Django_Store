@@ -19,8 +19,15 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'uuid', 'user', 'order_products', 'total_price', 'created_at', 'updated_at', 'time_since_created', 'user_id', 'username'
-        ]
+            'uuid',
+            'user',
+            'order_products',
+            'total_price',
+            'created_at',
+            'updated_at',
+            'time_since_created',
+            'user_id',
+            'username']
 
     def create(self, validated_data):
         # validated_data = {'user': 1, 'order_products': [{'product_id': 1, 'quantity': 2}]}

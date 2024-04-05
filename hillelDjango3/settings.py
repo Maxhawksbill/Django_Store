@@ -12,9 +12,15 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+<<<<<<< HEAD
 from celery.schedules import crontab
 from dotenv import load_dotenv
 from celery import Celery
+=======
+import certifi
+from dotenv import load_dotenv
+import dj_database_url
+>>>>>>> 6b4b11ddc01f408787fedcedb82681e8cfa2ac97
 
 load_dotenv()
 
@@ -26,12 +32,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+SECRET_KEY = "e)xc!v5&&)72#-d3g+0j2_!c_v^&g0fsm^1v3zydu0ir&a+4x9"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
+<<<<<<< HEAD
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+=======
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",") + ["0.0.0.0"]
+>>>>>>> 6b4b11ddc01f408787fedcedb82681e8cfa2ac97
 
 
 # Application definition
@@ -50,7 +60,11 @@ INSTALLED_APPS = [
     "debug_toolbar",
     'django_filters',
     "django_celery_beat",
+<<<<<<< HEAD
     "django_celery_results",
+=======
+    'django_celery_results',
+>>>>>>> 6b4b11ddc01f408787fedcedb82681e8cfa2ac97
     # Local apps
     'products',
 ]
@@ -64,6 +78,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'hillelDjango3.urls'
@@ -90,16 +106,31 @@ WSGI_APPLICATION = 'hillelDjango3.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        # PostgreSQL
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ["DB_NAME"],
-        'USER': os.environ["DB_USER"],
-        'PASSWORD': os.environ["DB_PASSWORD"],
-        'HOST': os.environ["DB_HOST"],
+DATABASE_URL = os.environ.get("DATABASE_URL")
+USE_SQLITE = os.environ.get("USE_SQLITE", "False").lower() == "true"
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(default=DATABASE_URL)
     }
-}
+elif USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            # PostgreSQL
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ["DB_NAME"],
+            'USER': os.environ["DB_USER"],
+            'PASSWORD': os.environ["DB_PASSWORD"],
+            'HOST': os.environ["DB_HOST"],
+        }
+    }
 
 
 # Password validation
@@ -158,10 +189,10 @@ LOGGING = {
         }
     },
     'loggers': {
-        'django.db.backends': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-        }
+        # 'django.db.backends': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['console'],
+        # }
     }
 }
 
@@ -184,12 +215,13 @@ REST_FRAMEWORK = {
 }
 
 # Celery settings
-CELERY_BROKER_URL = os.environ["CELERY_BROKER_URL"]
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
 
 CELERY_BEAT_SCHEDULE = {
     'hello_world': {
         'task': 'products.tasks.hello_world_task',
         'schedule': 10.0,
+<<<<<<< HEAD
     },
     'daily_statistics': {
         'task': 'products.tasks.order_daily_statistics',
@@ -197,4 +229,21 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
+=======
+    }
+}
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
+
+os.environ["SSL_CERT_FILE"] = certifi.where()
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+>>>>>>> 6b4b11ddc01f408787fedcedb82681e8cfa2ac97
 CELERY_RESULT_BACKEND = "django-db"

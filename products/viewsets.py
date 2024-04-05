@@ -17,7 +17,8 @@ from products.serializers.recipe import RecipeSerializer
 class ProductViewSet(viewsets.ModelViewSet):
     # select_related - for ForeignKey
     # prefetch_related - for ManyToMany
-    queryset = Product.objects.select_related('category').prefetch_related('tags').all()
+    queryset = Product.objects.exclude(is_18_plus=True).select_related(
+        'category').prefetch_related('tags').all()
 
     permission_classes = [IsAuthenticatedOrReadOnly]
     filterset_class = ProductFilter
@@ -49,7 +50,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all().prefetch_related(
-            'order_products', 'order_products__product')
+        'order_products', 'order_products__product')
     serializer_class = OrderSerializer
 
     def get_queryset(self):
